@@ -1,6 +1,7 @@
 import { Elysia } from "elysia";
 import type { ElysiaWS } from "elysia/ws";
 import { decode } from "./shared/websocket";
+import cors from "@elysiajs/cors";
 
 const port = 5005;
 
@@ -12,6 +13,7 @@ const gzipMap = Bun.file("map.json")
 	.then((t) => Bun.gzipSync(t));
 
 const app = new Elysia()
+	.use(cors({ origin: "http://localhost:5173" }))
 	.get("/map", () => gzipMap)
 	.ws("/", {
 		open(ws) {
