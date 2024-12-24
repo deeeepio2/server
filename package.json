@@ -11,6 +11,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@dimforge/rapier2d": "^0.14.0",
 		"elysia": "^1.2.2"
 	}
 }

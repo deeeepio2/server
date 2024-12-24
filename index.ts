@@ -6,7 +6,13 @@ const port = 5005;
 
 const connections: Record<string, ElysiaWS> = {};
 
+// cache gzip'd map
+const gzipMap = Bun.file("map.json")
+	.text()
+	.then((t) => Bun.gzipSync(t));
+
 const app = new Elysia()
+	.get("/map", () => gzipMap)
 	.ws("/", {
 		open(ws) {
 			connections[ws.id] = ws;
