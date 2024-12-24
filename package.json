@@ -3,7 +3,9 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"start": "bun run index.ts"
+		"start": "bun run index.ts",
+
+		"git-update": "git pull && git submodule update --remote --merge"
 	},
 	"dependencies": {
 		"socket.io": "^4.8.1"
