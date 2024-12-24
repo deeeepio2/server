@@ -1,17 +1,26 @@
-import { Server } from "socket.io";
+import { Elysia } from "elysia";
+import type { ElysiaWS } from "elysia/ws";
+import { decode } from "./shared/websocket";
 
-const io = new Server({
-	cors: {
-		origin: "http://localhost:5173",
-	},
-	path: "/ws",
-});
+const port = 5005;
 
-io.on("connection", (socket) => {
-	console.log(socket.id, "connected");
+const connections: Record<string, ElysiaWS> = {};
 
-	socket.on("name", (name) => {
-		console.log(socket.id, "set name to", name);
-	});
-});
-io.listen(5005);
+const app = new Elysia()
+	.ws("/", {
+		open(ws) {
+			connections[ws.id] = ws;
+
+			ws.send("hi");
+		},
+		close(ws) {
+			delete connections[ws.id];
+		},
+		message(ws, message) {
+			console.log(decode(Buffer.from(message as never).buffer as ArrayBuffer));
+		},
+	})
+	.onStart(({ server }) => {
+		console.log(`Server started on port ${port}`);
+	})
+	.listen(port);
